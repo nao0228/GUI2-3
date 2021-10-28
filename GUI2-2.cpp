@@ -13,6 +13,8 @@ WCHAR szTitle[MAX_LOADSTRING];                  // タイトル バーのテキ�
 WCHAR szWindowClass[MAX_LOADSTRING];            // メイン ウィンドウ クラス名
 int mx;
 int my;
+int mxo;
+int myo;
 
 
 void mouse(HDC hdc, int nLeftRect, int nTopRec) {
@@ -142,10 +144,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
         mx = -100;
         my = -100;
+        mxo = -100;
+        myo = -100;
+
+    case WM_LBUTTONUP:
+        mx = -100;
+        my = -100;
+        mxo = -100;
+        myo = -100;
+
     case WM_LBUTTONDOWN:
         case WM_MOUSEMOVE:
             if (wParam & MK_LBUTTON)
             {
+                mxo = mx;
+                myo = my;
                 mx = GET_X_LPARAM(lParam);
                 my=GET_Y_LPARAM(lParam);
 
@@ -174,8 +187,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: HDC を使用する描画コードをここに追加してください...
+            if (mx >= 0 && my >= 0 && mxo >= 0 && myo >= 0) {
+                MoveToEx(hdc,mx,my,NULL);
+                LineTo(hdc, mxo, myo);
+            }
 
-           mouse(hdc, mx, my);
+           //mouse(hdc, mx, my);
             EndPaint(hWnd, &ps);
         }
         break;
